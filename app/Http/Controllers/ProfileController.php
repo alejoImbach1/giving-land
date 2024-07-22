@@ -12,43 +12,39 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function show($username)
-    {
-        if (!User::where('username', $username)->exists()) {
-            return to_route('home');
-        }
-        $profile = User::where('username', $username)->first()->profile;
-        $posts = $profile->user->posts->sortByDesc('created_at');
-        // $posts = $profile->user->posts;
-        // dd($posts);
-        return view('sections.profile.show', compact('profile','posts'));
-    }
-
-    public function edit()
-    {
-        $username = Auth::user()->username;
-        return view('sections.profile.edit', compact('username'));
-    }
-
-    // public function goToSection($username, $section)
+    // public function show($username)
     // {
-    //     switch ($section) {
-    //         case 'favorites':
-    //             # code...
-    //             break;
-    //         case 'settlements-history':
-    //             # code...
-    //             break;
-    //         case 'security-privacy':
-    //             # code...
-    //             break;
-
-    //         default:
-    //             return to_route('home');
-    //             break;
+    //     if (!User::where('username', $username)->exists()) {
+    //         return to_route('home');
     //     }
-
-    //     $profile = Auth::user()->profile;
-    //     return view('sections.profile.index', compact('section', 'profile'));
+    //     $profile = User::where('username', $username)->first()->profile;
+    //     $posts = $profile->user->posts->sortByDesc('created_at');
+    //     // $posts = $profile->user->posts;
+    //     // dd($posts);
+    //     return view('sections.profile.show', compact('profile','posts'));
     // }
+
+    // public function edit()
+    // {
+    //     $username = Auth::user()->username;
+    //     return view('sections.profile.edit', compact('username'));
+    // }
+
+    public function show($id)
+    {
+        $user = User::find($id);
+        if(!$user){
+            return response()->json(['error','perfil no encontrado'],404);
+        }
+        // Profile::with()
+        $profile = $user->profile;
+        return response()->json($profile);
+    }
+
+    public function update(Request $request)
+    {
+        // $profile = $request->auth()->user()->profile;
+
+    }
+
 }

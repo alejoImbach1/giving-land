@@ -12,27 +12,20 @@ use function Laravel\Prompts\error;
 class AuthController extends Controller
 {
     //
-    public function login(LoginRequest $request)
+    public function login(Request $request)
     {
-        if (auth()->check()){
-            return response()->json(['message' => 'ya hay un usuario autenticado'],403);
-        }
         if (!Auth::attempt($request->only(['email', 'password']))) {
-            $message = 'El correo electrónico o la contraseña son incorrectos.';
-            $errors = ['email' => $message];
-            return response()->json(compact('message','errors'),401);
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
         // $request->session()->regenerate();
-        $user = User::where('email',$request->email)->firstOrFail();
+        $user = auth()->user();
         $auth_token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(compact('user','auth_token'));
+        return response()->json(compact('auth_token'));
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
-        return response()->json([
-            'message' => 'Se ha cerrado sesión'
-        ]);
+        $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Se cerró sesión']);
     }
 }

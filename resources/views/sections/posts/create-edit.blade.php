@@ -21,7 +21,7 @@
                     Publicación de artículo
                 @endif
             </h1>
-            <livewire:posts.create-edit :$post/>
+            {{-- <livewire:posts.create-edit :$post/> --}}
         </div>
     </main>
 
